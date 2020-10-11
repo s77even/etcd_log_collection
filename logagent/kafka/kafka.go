@@ -8,11 +8,12 @@ import (
 )
 
 //向kafka中写入日志
-
+//logData 中的数据 topic表示要写入的标题 data是日志数据
 type logData struct {
 	topic string
 	data string
 }
+//声明全局变量 cilent 和 日志文件写入的通道
 var (
 	client sarama.SyncProducer
 	logDataChan chan *logData
@@ -36,6 +37,7 @@ func Init(adds []string,maxsize int) (err error) {
 	return
 }
 
+// SendToChan 将topic data封装为结构体 传入通道
 func SendToChan(topic, data string){
 	msg := &logData{
 		topic: topic,
@@ -44,7 +46,7 @@ func SendToChan(topic, data string){
 	logDataChan <- msg
 }
 
-
+//SendToKafka 从logDataChan中取出数据 将数据发往kafka
 func SendToKafka() {
 	for{
 		select {

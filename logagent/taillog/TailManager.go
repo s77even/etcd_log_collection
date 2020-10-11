@@ -6,13 +6,15 @@ import (
 	"time"
 )
 
+// 日志收集任务的管理者
 type Manager struct {
-	logEntry []*etcd.LogEntry
-	taskMap map[string]*TailTask
-	newConfChan chan []*etcd.LogEntry
+	logEntry []*etcd.LogEntry //所有日志收集项的配置 包括path和topic
+	taskMap map[string]*TailTask// 日志收集任务的映射 方便查找到对应任务
+	newConfChan chan []*etcd.LogEntry //监控配置改变的通道
 }
-var TskMgr *Manager
 
+var TskMgr *Manager
+//Init ...
 func Init(logEntryConf []*etcd.LogEntry){
 	TskMgr = &Manager{
 		logEntry: logEntryConf,
@@ -29,6 +31,7 @@ func Init(logEntryConf []*etcd.LogEntry){
 	go TskMgr.run()
 }
 
+// run 对日志收集项的配置文件的改变做出对应操作
 func (t *Manager)run(){
 	for {
 		select {
@@ -67,6 +70,7 @@ func (t *Manager)run(){
 	}
 }
 
+// NewConfChan 对外暴露newConfChan
 func NewConfChan()  chan<- []*etcd.LogEntry {
 	return  TskMgr.newConfChan
 }

@@ -29,7 +29,7 @@ func Init(addr string, timeout time.Duration)(err error){
 	return
 }
 
-//GetConf 根据key获取value
+//GetConf 根据key获取value 获取配置文件项
 func GetConf(key string)(LogEntryValue []*LogEntry , err error){
 	//get
 	ctx , cancle := context.WithTimeout(context.Background(),time.Second)
@@ -49,13 +49,13 @@ func GetConf(key string)(LogEntryValue []*LogEntry , err error){
 	return
 }
 
-//ConfWatch
+//ConfWatch 利用etcd的watch机制 监控配置文件的变化
 func ConfWatch(key string, newConfCh chan<- []*LogEntry){
 	ch := cli.Watch(context.Background(),key)
 	for wresp := range ch{
 		for _ , evt := range  wresp.Events{
 			var newConf []*LogEntry
-			if evt.Type != clientv3.EventTypeDelete{
+			if evt.Type != clientv3.EventTypeDelete{ // 如果是删除操作 在此什么都不做 通道传入空的newconf
 				err :=json.Unmarshal(evt.Kv.Value, &newConf)
 				if err != nil {
 					fmt.Println("json unmarshal failed , err :", err)

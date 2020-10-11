@@ -8,15 +8,16 @@ import (
 )
 
 //从日志文件中搜集日志
-
+//日志搜集任务的相关数据
 type TailTask struct {
-	path string
-	topic string
-	instance *tail.Tail
-	ctx context.Context
-	cancelFunc context.CancelFunc
+	path string //日志文件的存放路径
+	topic string //日志的topic
+	instance *tail.Tail //一个日志收集的实例
+	ctx context.Context//context 为了控制后台收集日志协程
+	cancelFunc context.CancelFunc //对应日志收集任务goroutine的退出函数
 }
 
+// NewTailTask tailtask的构造函数
 func NewTailTask(path , topic string) (tailObj *TailTask){
 	ctx , cancle := context.WithCancel(context.Background())
 	tailObj = &TailTask{
@@ -28,6 +29,7 @@ func NewTailTask(path , topic string) (tailObj *TailTask){
 	tailObj.init()
 	return
 }
+
 
 func (t *TailTask)init(){
 	config := tail.Config{
@@ -45,6 +47,7 @@ func (t *TailTask)init(){
 	go t.run()
 }
 
+// run 将收集到的日志传入kafka
 func (t *TailTask)run(){
 	for {
 		select {

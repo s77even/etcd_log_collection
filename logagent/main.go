@@ -11,6 +11,7 @@ import (
 	"time"
 )
 
+// 构造一个结构体指针
 var cfg = new(conf.AppConfig)
 
 
