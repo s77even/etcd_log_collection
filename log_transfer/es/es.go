@@ -1,3 +1,7 @@
+/*
+es 实现了es的初始化连接
+并利用通道将kafka中获取到的数据发往es
+ */
 package es
 
 import (

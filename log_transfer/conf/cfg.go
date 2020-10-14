@@ -1,3 +1,4 @@
+//conf中存放了从配置文件中ini解析的结构体及数据类型
 package conf
 
 type LogTransferCfg struct {

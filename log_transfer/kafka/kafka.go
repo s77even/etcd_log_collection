@@ -1,3 +1,4 @@
+//kafka consumer的初始化与消费
 package kafka
 
 import (
